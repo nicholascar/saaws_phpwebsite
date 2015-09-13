@@ -139,7 +139,105 @@ function generate_breadcrumbs($aws_id) {
 	return $ret;
 }
 
-// TODO: complete the graphs
+function make_aws_content_data($aws_id, $view) {
+    $d = get_graph_data($aws_id, $view);
+    switch ($view) {
+        case 'today';
+            $time_name = 'Today';
+            break;
+        case 'yesterday';
+            $time_name = 'Yesterday';
+            break;
+        case '7days';
+            $time_name = '7 day';
+            break;
+        case '30days';
+            $time_name = '30 day';
+            break;
+        case 'monthly';
+            $time_name = 'Each month';
+            break;
+    }
+    
+    $html = '<h2>'.$time_name.'\'s data for ' . $d[0] . '</h2>';
+    
+    switch ($view) {
+        case 'today';
+        case 'yesterday';
+            // make HTML table
+            $html .= make_table_hourly($d, $time_name);
+            // make graphs                            
+            $title = $time_name.'\'s temperatures for ' . $d[0];
+            $is_bar_graph = 'false';
+            $colour = 'red';
+            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['airT'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s temperatures"/></p>';
+            $title = $time_name.'\'s rain for ' . $d[0];
+            $is_bar_graph = 'true';
+            $colour = 'blue';
+            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rain'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s rain"/></p>';
+            $title = $time_name.'\'s relative humidity for ' . $d[0];
+            $is_bar_graph = 'false';
+            $colour = 'purple';
+            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rh'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s relative humidity"/></p>';
+            $title = $time_name.'\'s solar radiation (GSR) for ' . $d[0];
+            $is_bar_graph = 'true';
+            $colour = 'red';
+            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['gsr'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s solar radiation"/></p>';
+            $title = $time_name.'\'s windspeeds for ' . $d[0];
+            $data = array(
+                'min' => null,
+                'avg' => $d[1]['Wavg'],
+                'max' => $d[1]['Wmax']
+            );
+            $html .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s windspeeds"/></p>';
+            break;
+        case '7days';            
+        case '30days';
+        case 'monthly';
+            // make HTML table
+            $html .= make_table_daily($d, $time_name);
+            // make graphs
+            $title = $time_name.'\'s ET for ' . $d[0] . ' (mm)';
+            $is_bar_graph = 'true';
+            $colour = 'red';
+            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['et_asce_t'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s ET"/></p>';  
+            $title = $time_name.'\'s rain for ' . $d[0] . ' (mm)';
+            $is_bar_graph = 'true';
+            $colour = 'blue';
+            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rain'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s rain"/></p>';                            
+            $title = '$time_name\'s temperatures for ' . $d[0] . ' (deg C)';
+            $data = array(
+                'min' => $d[1]['airT_min'],
+                'avg' => $d[1]['airT_avg'],
+                'max' => $d[1]['airT_max']
+            );
+            $html .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for '.$time_name.'\'s temperatures"/></p>';
+            $title = $time_name.'\'s relative humidity for ' . $d[0] . ' (%)';
+            $data = array(
+                'min' => $d[1]['rh_min'],
+                'avg' => $d[1]['rh_avg'],
+                'max' => $d[1]['rh_max']
+            );
+            $html .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for last '.$time_name.'\'s relative humidity"/></p>';
+            $title = $time_name.'\'s solar radiation for ' . $d[0] . ' (KW/m2)';
+            $is_bar_graph = 'true';
+            $colour = 'red';
+            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['gsr'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s solar radiation"/></p>';  
+            $title = $time_name.'\'s wind speeds for ' . $d[0] . ' (km/h)';
+            $data = array(
+                'min' => null,
+                'avg' => $d[1]['Wavg'],
+                'max' => $d[1]['Wmax']
+            );
+            $html .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for '.$time_name.'\'s wind speeds"/></p>';
+            break;
+    }    
+    
+    return $html;
+}
+// TODO: complete the views finyear download summary
+// TODO: fix the graphs for monthly temp & RH
+// TODO: fix footer breaking code
 function generate_aws_content($aws_id, $view, $main_view)  {
 	$aws_content = "\n\n<!-- //////////////weatherstation content/////////////////////////////////////////////////////// -->\n\n";
 
@@ -156,209 +254,63 @@ function generate_aws_content($aws_id, $view, $main_view)  {
 	</script>
 	';
 	
-	if (strlen($aws_id) != 1) /*i.e. $aws_id == 0*/ {
-            //test the type of station for TBRG
-            if (substr($aws_id,0,4) == 'TBRG') {
-                // connect to DB using mysqli
-                include('db-connection.php');
-  
-                $sql = "SELECT tbl_stations.name, tbl_districts.name AS district FROM tbl_stations INNER JOIN tbl_districts ON district_id = id WHERE aws_id =  '".$aws_id."'";
-                
-                if ($result = $mysqli->query($sql)) {
-                    while($obj = $result->fetch_object()) {
-                        $name = $obj->name;
-                        $aws_content .= '<h3>'.$name.' Raingauge</h3>';
-                        $aws_content .= get_include_contents('table_raingauge_summary.php');
-                        $aws_content .= '<p></p>';
-                        $aws_content .= get_include_contents('table_rain.php');
-                        $aws_content .= '<p><b>NOTE: where there are differences between the summary and the full data table, always follow the summary table. Results will be consistent across tables after June \'11 when this new system is fully operational.</b></p>';
-                    }	
-                }
-                unset($result);
-                
-                $aws_content .= '<p></p>';
-                $aws_content .= view_download_rainguage();
+	if (strlen($aws_id) > 1) /*i.e. $aws_id == 0*/ {
+        //test the type of station for TBRG
+        if (substr($aws_id,0,4) == 'TBRG') {
+            // connect to DB using mysqli
+            include('db-connection.php');
+
+            $sql = "SELECT tbl_stations.name, tbl_districts.name AS district FROM tbl_stations INNER JOIN tbl_districts ON district_id = id WHERE aws_id =  '".$aws_id."'";
+            
+            if ($result = $mysqli->query($sql)) {
+                while($obj = $result->fetch_object()) {
+                    $name = $obj->name;
+                    $aws_content .= '<h3>'.$name.' Raingauge</h3>';
+                    $aws_content .= get_include_contents('table_raingauge_summary.php');
+                    $aws_content .= '<p></p>';
+                    $aws_content .= get_include_contents('table_rain.php');
+                    $aws_content .= '<p><b>NOTE: where there are differences between the summary and the full data table, always follow the summary table. Results will be consistent across tables after June \'11 when this new system is fully operational.</b></p>';
+                }	
+            }
+            unset($result);
+            
+            $aws_content .= '<p></p>';
+            $aws_content .= view_download_rainguage();
 	    }
 		else {
-                    //this is a full AWS, not a TBRG
-                    $aws_content .= '<p id="regularity_note">These weatherstations record data every 15 minutes but only reports to the web on the hour.</p>
-                    <div id="single_station_links">
-                        Observations:&nbsp;
-                        <a href="?aws_id='. $aws_id .'&amp;view=summary">Summary</a> |
-                        <a href="?aws_id='. $aws_id .'&amp;view=today">Today</a> |
-                        <a href="?aws_id='. $aws_id .'&amp;view=yesterday">Yesterday</a> |
-                        <a href="?aws_id='. $aws_id .'&amp;view=7days">7 days</a> |
-                        <a href="?aws_id='. $aws_id .'&amp;view=30days">30 days</a> |
-                        <a href="?aws_id='. $aws_id .'&amp;view=monthly">Monthly History</a> |
-                        <a href="?aws_id='. $aws_id .'&amp;view=finyr">Fin. Year</a> |
-                        <a href="?aws_id='. $aws_id .'&amp;view=download">Download</a>
-                    </div>
-                    <p></p>';
+            //this is a full AWS, not a TBRG
+            $aws_content .= '<p id="regularity_note">These weatherstations record data every 15 minutes but only reports to the web on the hour.</p>
+            <div id="single_station_links">
+                Observations:&nbsp;
+                <a href="?aws_id='. $aws_id .'&amp;view=summary">Summary</a> |
+                <a href="?aws_id='. $aws_id .'&amp;view=today">Today</a> |
+                <a href="?aws_id='. $aws_id .'&amp;view=yesterday">Yesterday</a> |
+                <a href="?aws_id='. $aws_id .'&amp;view=7days">7 days</a> |
+                <a href="?aws_id='. $aws_id .'&amp;view=30days">30 days</a> |
+                <a href="?aws_id='. $aws_id .'&amp;view=monthly">Monthly History</a> |
+                <a href="?aws_id='. $aws_id .'&amp;view=finyr">Fin. Year</a> |
+                <a href="?aws_id='. $aws_id .'&amp;view=download">Download</a>
+            </div>
+            <p></p>';
 
-                    switch($view) {
-                        case "today":
-                            $d = get_graph_data($aws_id, 'today');
-                            $aws_content .= '<h2>Today\'s data for ' . $d[0] . '</h2>';
-                            // make HTML table
-                            $aws_content .= make_table_hourly($d, 'Today');
-                            // make graphs                            
-                            $title = 'Today\'s temperatures for ' . $d[0];
-                            $is_bar_graph = 'false';
-                            $colour = 'red';
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['airT'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for today\'s temperatures"/></p>';
-                            $title = 'Today\'s rain for ' . $d[0];
-                            $is_bar_graph = 'true';
-                            $colour = 'blue';
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rain'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for today\'s rain"/></p>';
-                            $title = 'Today\'s relative humidity for ' . $d[0];
-                            $is_bar_graph = 'false';
-                            $colour = 'purple';
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rh'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for today\'s relative humidity"/></p>';
-                            $title = 'Today\'s solar radiation (GSR) for ' . $d[0];
-                            $is_bar_graph = 'true';
-                            $colour = 'red';
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['gsr'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for today\'s solar radiation"/></p>';
-                            $title = 'Today\'s windspeeds for ' . $d[0];
-                            $data = array(
-                                'min' => null,
-                                'avg' => $d[1]['Wavg'],
-                                'max' => $d[1]['Wmax']
-                            );
-                            $aws_content .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for today\'s windspeeds"/></p>';		
-                            break;
-                        case "yesterday":
-                            $d = get_graph_data($aws_id, 'yesterday');
-                            $aws_content .= '<h2>Yesterdays\'s data for ' . $d[0] . '</h2>';
-                            // make HTML table
-                            $aws_content .= make_table_hourly($d, 'Yesterday');
-                            // make graphs                            
-                            $title = 'Yesterday\'s temperatures for ' . $d[0] . ' (deg C)';
-                            $is_bar_graph = 'false';
-                            $colour = 'red';                    
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['airT'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for yesterday\'s temperatures"/></p>';
-                            $title = 'Yesterday\'s rain for ' . $d[0] . ' (mm)';
-                            $is_bar_graph = 'true';
-                            $colour = 'blue';                    
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rain'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for yesterday\'s rain"/></p>';
-                            $title = 'Yesterday\'s relative humidity for ' . $d[0] . ' (%)';
-                            $is_bar_graph = 'false';
-                            $colour = 'purple';
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rh'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for yesterday\'s relative humidity"/></p>';
-                            $title = 'Yesterday\'s solar radiation (GSR) for ' . $d[0] . ' (KW/m2)';
-                            $is_bar_graph = 'true';
-                            $colour = 'red';
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['gsr'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for yesterday\'s solar radiation"/></p>';
-                            $title = 'Yesterday\'s windspeeds for ' . $d[0] . ' (km/h)';
-                            $data = array(
-                                'min' => null,
-                                'avg' => $d[1]['Wavg'],
-                                'max' => $d[1]['Wmax']
-                            );
-                            $aws_content .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for yesterday\'s windspeeds"/></p>';					
-                            break;						
-                        case "7days":
-                            $d = get_graph_data($aws_id, '7days');
-                            $aws_content .= '<h2>Last 7 day\'s data for ' . $d[0] . '</h2>';
-                            // make HTML table
-                            $aws_content .= make_table_daily($d, '7 day');
-                            // make graphs
-                            $title = 'Last 7 day\'s ET for ' . $d[0] . ' (mm)';
-                            $is_bar_graph = 'true';
-                            $colour = 'red';
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['et_asce_t'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for last 7 day\'s ET"/></p>';  
-                            $title = 'Last 7 day\'s rain for ' . $d[0] . ' (mm)';
-                            $is_bar_graph = 'true';
-                            $colour = 'blue';
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rain'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for last 7 day\'s rain"/></p>';                            
-                            $title = 'Last 7 day\'s temperatures for ' . $d[0] . ' (deg C)';
-                            $data = array(
-                                'min' => $d[1]['airT_min'],
-                                'avg' => $d[1]['airT_avg'],
-                                'max' => $d[1]['airT_max']
-                            );
-                            $aws_content .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for last 7 day\'s temperatures"/></p>';
-                            $title = 'Last 7 day\'s relative humidity for ' . $d[0] . ' (%)';
-                            $data = array(
-                                'min' => $d[1]['rh_min'],
-                                'avg' => $d[1]['rh_avg'],
-                                'max' => $d[1]['rh_max']
-                            );
-                            $aws_content .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for last 7 day\'s relative humidity"/></p>';
-                            $title = 'Last 7 day\'s solar radiation for ' . $d[0] . ' (KW/m2)';
-                            $is_bar_graph = 'true';
-                            $colour = 'red';
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['gsr'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for last 7 day\'s solar radiation"/></p>';  
-                            $title = 'Last 7 day\'s wind speeds for ' . $d[0] . ' (km/h)';
-                            $data = array(
-                                'min' => null,
-                                'avg' => $d[1]['Wavg'],
-                                'max' => $d[1]['Wmax']
-                            );                             
-                            $aws_content .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for last 7 day\'s wind speeds"/></p>';
-                            break;	
-                        case "30days":
-                            $d = get_graph_data($aws_id, '30days');
-                            $aws_content .= '<h2>Last 30 day\'s data for ' . $d[0] . '</h2>';
-                            // make HTML table
-                            $aws_content .= make_table_daily($d, '30 day');
-                            // make graphs
-                            $title = 'Last 30 day\'s ET for ' . $d[0] . ' (mm)';
-                            $is_bar_graph = 'true';
-                            $colour = 'red';
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['et_asce_t'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for last 30 day\'s ET"/></p>';  
-                            $title = 'Last 30 day\'s rain for ' . $d[0] . ' (mm)';
-                            $is_bar_graph = 'true';
-                            $colour = 'blue';
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rain'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for last 30 day\'s rain"/></p>';                            
-                            $title = 'Last 30 day\'s temperatures for ' . $d[0] . ' (deg C)';
-                            $data = array(
-                                'min' => $d[1]['airT_min'],
-                                'avg' => $d[1]['airT_avg'],
-                                'max' => $d[1]['airT_max']
-                            );
-                            $aws_content .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for last 30 day\'s temperatures"/></p>';
-                            $title = 'Last 30 day\'s relative humidity for ' . $d[0] . ' (%)';
-                            $data = array(
-                                'min' => $d[1]['rh_min'],
-                                'avg' => $d[1]['rh_avg'],
-                                'max' => $d[1]['rh_max']
-                            );
-                            $aws_content .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for last 30 day\'s relative humidity"/></p>';
-                            $title = 'Last 30 day\'s solar radiation for ' . $d[0] . '(KW/m2)';
-                            $is_bar_graph = 'true';
-                            $colour = 'red';
-                            $aws_content .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['gsr'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for last 30 day\'s solar radiation"/></p>';  
-                            $title = 'Last 30 day\'s wind speeds for ' . $d[0] . ' (km/h)';
-                            $data = array(
-                                'min' => null,
-                                'avg' => $d[1]['Wavg'],
-                                'max' => $d[1]['Wmax']
-                            );                             
-                            $aws_content .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for last 30 day\'s wind speeds"/></p>';                            
-                            break;	
-                        case "monthly":
-                            //$aws_content .= get_include_contents('table_monthly.php');
-                            //$aws_content .= get_include_contents('table_rain.php');
-                            $aws_content .= '<p></p>';
-                            //$aws_content .= get_include_contents('table_et.php');
-                            $aws_content .= '<p></p>';
-                            $aws_content .= '<p style="font-size:15px; font-weight:bold;">Graphs are for all-years (long term) average.</p>';
-                            $aws_content .= '<p><img src="graph_monthly_et.php?aws_id='.$aws_id.'"  alt="monthly ET"/>';
-                            $aws_content .= '<p><img src="graph_monthly_temp.php?aws_id='.$aws_id.'"  alt="monthly temperatures"/></p>';
-                            $aws_content .= '<p><img src="graph_monthly_rh.php?aws_id='.$aws_id.'"  alt="monthly relative humidity"/></p>';
-                            $aws_content .= '<p><img src="graph_monthly_gsr.php?aws_id='.$aws_id.'"  alt="monthly solar radiation"/></p>';
-                            $aws_content .= '<p><img src="graph_monthly_wind.php?aws_id='.$aws_id.'"  alt="monthly wind speeds"/></p>';
-                            break;	
-                        case "finyr":
-                            $aws_content .= get_include_contents('table_finyr.php');
-                            $aws_content .= '<p></p>';
-                            break;			
-                        case "download":
-                            $aws_content .= view_download();
-                            break;			
-                        default:	//table_summary	
-                            $aws_content .= get_include_contents('table_summary.php');
-                            break;
+            switch($view) {
+                case "today":
+                case "yesterday":
+                case "7days":
+                case "30days":
+                case "monthly":
+                    $aws_content .= make_aws_content_data($aws_id, $view);
+                    break;	
+                case "finyr":
+                    $aws_content .= get_include_contents('table_finyr.php');
+                    $aws_content .= '<p></p>';
+                    break;			
+                case "download":
+                    $aws_content .= view_download();
+                    break;			
+                default:	//table_summary	
+                    $aws_content .= get_include_contents('table_summary.php');
+                    break;
 			}
 		}
 	}
@@ -370,24 +322,16 @@ function generate_aws_content($aws_id, $view, $main_view)  {
 					<a href="?main=daily">Latest Daily Readings</a>
 				</p>';
 		
-		if (isset($main_view))
-		{
-			switch($main_view)
-			{
-				case 'map':
-					$aws_content .= main_map($head_additions);
-				break;
-				case '15min':
-					$aws_content .= main_15min();
-				break;
-				case 'daily':
-					$aws_content .= main_daily();
-				break;
-			}
-		}
-		else
-		{
-			$aws_content .= main_map($head_additions);
+        switch($main_view) {
+            case '15min':
+                $aws_content .= main_15min();
+                break;
+            case 'daily':
+                $aws_content .= main_daily();
+                break;
+            default:
+                $aws_content .= main_map($head_additions);
+                break;
 		}
 	}
 
@@ -736,14 +680,13 @@ function main_15min() {
 	return $ret;	
 }
 
-// TODO: CALL function
 function main_daily() {
     // connect to DB using mysqli
     include('db-connection.php');
 		
-	$sql = 	"CALL main_latest_daily('SAMDB');";
+	$sql = 	"CALL proc_days_latest('SAMDB');";
 	$mysqli->query($sql);
-	$sql = "SELECT * FROM readings_daily;";
+	$sql = "SELECT * FROM tbl_temp_data_days_latest;";
 	
 	$ret = '';
 	if ($result = $mysqli->query($sql))
@@ -780,7 +723,7 @@ function main_daily() {
 						<td>$obj->rain_total</td>
 						<td>$obj->frost_hrs</td>
 						<td>$obj->deg_days</td>
-						<td>$obj->et_ref_s</td>
+						<td>$obj->et_asce_t</td>
 					</tr>";
 		}
 		$ret .= '</table>';
@@ -1101,6 +1044,36 @@ function get_graph_data($aws_id, $view) {
             WHERE tbl_data_days.aws_id = '" . $aws_id . "' AND stamp >= CURDATE() - INTERVAL 40 DAY
             ORDER BY stamp;";
             break;
+        case 'monthly':
+            $sql = "            
+            SELECT
+                name,
+                DATE_FORMAT(stamp,'%y-%m') AS s,
+                ROUND(MIN(airT_min),1) AS airT_min,
+                ROUND(AVG(airT_avg),1) AS airT_avg,
+                ROUND(MAX(airT_max),1) AS airT_max,
+                ROUND(AVG(appT_avg),1) AS appT_avg,
+                ROUND(AVG(dp_avg),1) AS dp_avg,
+                ROUND(AVG(deltaT_avg),1) AS deltaT_avg,
+                ROUND(MIN(soilT_min),1) AS soilT_min,
+                ROUND(AVG(soilT_avg),1) AS soilT_avg,
+                ROUND(MAX(soilT_max),1) AS soilT_max,
+                ROUND(MIN(rh_min),1) AS rh_min,
+                ROUND(AVG(rh_avg),1) AS rh_avg,
+                ROUND(MAX(rh_max),1) AS rh_max,
+                ROUND(SUM(gsr_total),0) AS gsr_total,
+                ROUND(AVG(Wavg),1) AS Wavg,
+                ROUND(MAX(Wmax),1) AS Wmax,
+                ROUND(SUM(rain_total),1) AS rain_total,
+                ROUND(SUM(et_asce_t),1) AS et_asce_t,
+                ROUND(SUM(deg_days),1) AS deg_days,
+                ROUND(SUM(frost_hrs),1) AS frost_hrs
+            FROM tbl_data_days INNER JOIN tbl_stations
+            ON tbl_data_days.aws_id = tbl_stations.aws_id
+            WHERE tbl_data_days.aws_id = '" . $aws_id . "'
+            GROUP BY YEAR(stamp), MONTH(stamp)
+            ORDER BY YEAR(stamp) DESC, MONTH(stamp);";
+            break;        
     }
 
     //make the data array
@@ -1140,6 +1113,7 @@ function get_graph_data($aws_id, $view) {
             break;
         case '7days':
         case '30days':
+        case 'monthly':
             if ($result = $mysqli->query($sql)) {
                 while($obj = $result->fetch_object()) {
                     $name = $obj->name;
@@ -1331,5 +1305,190 @@ function make_table_daily($data, $time_name) {
     $html .= '<table>';
   
     return $html;
+}
+# not used yet
+function make_table_monthly_rain($aws_id, $name) {
+    $sql = "
+        SELECT * FROM 
+        (
+            SELECT 
+            aws_id,
+            DATE_FORMAT(stamp, '%m/%Y') month, 
+            ROUND(SUM(rain_total),1) AS total, 
+            COUNT(rain_total) AS rain_days
+            FROM tbl_data_days 
+            WHERE aws_id = 'RMPW08' 
+            GROUP BY YEAR(stamp), MONTH(stamp) 
+            ORDER BY YEAR(stamp) DESC, MONTH(stamp) DESC
+        ) AS sums
+        INNER JOIN
+        (
+            SELECT 
+            DATE_FORMAT(stamp, '%m/%Y') AS month2,
+            SUM(IF(DAY(stamp) = 1,rain_total,'')) AS 'c1',
+            SUM(IF(DAY(stamp) = 2,rain_total,'')) AS 'c2',
+            SUM(IF(DAY(stamp) = 3,rain_total,'')) AS 'c3',
+            SUM(IF(DAY(stamp) = 4,rain_total,'')) AS 'c4',
+            SUM(IF(DAY(stamp) = 5,rain_total,'')) AS 'c5',
+            SUM(IF(DAY(stamp) = 6,rain_total,'')) AS 'c6',
+            SUM(IF(DAY(stamp) = 7,rain_total,'')) AS 'c7',
+            SUM(IF(DAY(stamp) = 8,rain_total,'')) AS 'c8',
+            SUM(IF(DAY(stamp) = 9,rain_total,'')) AS 'c9',
+            SUM(IF(DAY(stamp) = 10,rain_total,'')) AS 'c10',
+            SUM(IF(DAY(stamp) = 11,rain_total,'')) AS 'c11',
+            SUM(IF(DAY(stamp) = 12,rain_total,'')) AS 'c12',
+            SUM(IF(DAY(stamp) = 13,rain_total,'')) AS 'c13',
+            SUM(IF(DAY(stamp) = 14,rain_total,'')) AS 'c14',
+            SUM(IF(DAY(stamp) = 15,rain_total,'')) AS 'c15',
+            SUM(IF(DAY(stamp) = 16,rain_total,'')) AS 'c16',
+            SUM(IF(DAY(stamp) = 17,rain_total,'')) AS 'c17',
+            SUM(IF(DAY(stamp) = 18,rain_total,'')) AS 'c18',
+            SUM(IF(DAY(stamp) = 19,rain_total,'')) AS 'c19',
+            SUM(IF(DAY(stamp) = 20,rain_total,'')) AS 'c20',
+            SUM(IF(DAY(stamp) = 21,rain_total,'')) AS 'c21',
+            SUM(IF(DAY(stamp) = 22,rain_total,'')) AS 'c22',
+            SUM(IF(DAY(stamp) = 23,rain_total,'')) AS 'c23',
+            SUM(IF(DAY(stamp) = 24,rain_total,'')) AS 'c24',
+            SUM(IF(DAY(stamp) = 25,rain_total,'')) AS 'c25',
+            SUM(IF(DAY(stamp) = 26,rain_total,'')) AS 'c26',
+            SUM(IF(DAY(stamp) = 27,rain_total,'')) AS 'c27',
+            SUM(IF(DAY(stamp) = 28,rain_total,'')) AS 'c28',
+            SUM(IF(DAY(stamp) = 29,rain_total,'')) AS 'c29',
+            SUM(IF(DAY(stamp) = 30,rain_total,'')) AS 'c30',
+            SUM(IF(DAY(stamp) = 31,rain_total,'')) AS 'c31'
+            FROM tbl_data_days
+            WHERE aws_id = 'RMPW08' 
+            GROUP BY YEAR(stamp), MONTH(stamp)
+            ORDER BY YEAR(stamp) DESC, MONTH(stamp)
+        ) AS days
+        ON sums.month = days.month2;";
+        
+        // connect to DB using mysqli
+        include('db-connection.php');
+        
+	$table = '';
+	$name = '';
+
+	$cnt = 0;
+	if ($result = $mysqli->query($sql))
+	{
+		while($obj = $result->fetch_object())
+		{
+			$name = $obj->name;
+			if ($cnt % 2 == 0)
+			{
+				$table .= '<tr class="even">';
+			}
+			else
+			{
+				$table .= '<tr class="odd">';
+			}	
+			$cnt++;		
+			$table.=
+				'	<td>' . $obj->month . '</td>'.
+				'	<td>&nbsp;</td>'.
+				'	<td>' . $obj->total . '</td>'.
+				'	<td>&nbsp;</td>'.
+				'	<td>' . $obj->rain_days . '</td>'.
+				'	<td>' . ($obj->c1 > 0 ? $obj->c1 : '').'</td>'.
+				'	<td>' . ($obj->c2 > 0 ? $obj->c1 : ''). '</td>'.
+				'	<td>' . ($obj->c3 > 0 ? $obj->c3 : ''). '</td>'.
+				'	<td>' . ($obj->c4 > 0 ? $obj->c4 : ''). '</td>'.
+				'	<td>' . ($obj->c5 > 0 ? $obj->c5 : ''). '</td>'.
+				'	<td>' . ($obj->c6 > 0 ? $obj->c6 : ''). '</td>'.
+				'	<td>' . ($obj->c7 > 0 ? $obj->c7 : ''). '</td>'.
+				'	<td>' . ($obj->c8 > 0 ? $obj->c8 : ''). '</td>'.
+				'	<td>' . ($obj->c9 > 0 ? $obj->c9 : ''). '</td>'.
+				'	<td>' . ($obj->c10 > 0 ? $obj->c10 : ''). '</td>'.
+				'	<td>' . ($obj->c11 > 0 ? $obj->c11 : ''). '</td>'.
+				'	<td>' . ($obj->c12 > 0 ? $obj->c12 : ''). '</td>'.
+				'	<td>' . ($obj->c13 > 0 ? $obj->c13 : ''). '</td>'.
+				'	<td>' . ($obj->c14 > 0 ? $obj->c14 : ''). '</td>'.
+				'	<td>' . ($obj->c15 > 0 ? $obj->c15 : ''). '</td>'.
+				'	<td>' . ($obj->c16 > 0 ? $obj->c16 : ''). '</td>'.
+				'	<td>' . ($obj->c17 > 0 ? $obj->c17 : ''). '</td>'.
+				'	<td>' . ($obj->c18 > 0 ? $obj->c18 : ''). '</td>'.
+				'	<td>' . ($obj->c19 > 0 ? $obj->c19 : ''). '</td>'.
+				'	<td>' . ($obj->c20 > 0 ? $obj->c20 : ''). '</td>'.
+				'	<td>' . ($obj->c21 > 0 ? $obj->c21 : ''). '</td>'.
+				'	<td>' . ($obj->c22 > 0 ? $obj->c22 : ''). '</td>'.
+				'	<td>' . ($obj->c23 > 0 ? $obj->c23 : ''). '</td>'.
+				'	<td>' . ($obj->c24 > 0 ? $obj->c24 : ''). '</td>'.
+				'	<td>' . ($obj->c25 > 0 ? $obj->c25 : ''). '</td>'.
+				'	<td>' . ($obj->c26 > 0 ? $obj->c26 : ''). '</td>'.
+				'	<td>' . ($obj->c27 > 0 ? $obj->c27 : ''). '</td>'.
+				'	<td>' . ($obj->c28 > 0 ? $obj->c28 : ''). '</td>'.
+				'	<td>' . ($obj->c29 > 0 ? $obj->c29 : ''). '</td>'.
+				'	<td>' . ($obj->c30 > 0 ? $obj->c30 : ''). '</td>'.
+				'	<td>' . ($obj->c31 > 0 ? $obj->c31 : ''). '</td>'.
+				'</tr>';
+		}
+	}
+
+	$table = 	'<style>
+					.table_data {
+						table-layout: fixed;
+						font-size: 10px;
+					}
+					.table_data th, .table_data td {
+						width:25px!important;
+						overflow:hidden;
+						padding:0px!important;
+						/*border:none!important;*/
+					}
+				</style>
+				<table class="table_data">
+					<tr style="text-align:center;"><th colspan="36"><span style="font-weight:400; font-size:18px; line-size:25px;">Monthly Rain\'s data for '.$name.'</span></th></tr>
+					<tr style="text-align:center;"><th>Month</th><th></th><th>Total Rain</th><th></th><th>Rain</th><th colspan="31">Day of month</th></tr>
+					<tr>
+						<th></th>
+						<th></th>
+						<th>mm</th>
+						<th></th>
+						<th>Days</th>
+						<th>1</th>
+						<th>2</th>
+						<th>3</th>
+						<th>4</th>
+						<th>5</th>
+						<th>6</th>
+						<th>7</th>
+						<th>8</th>
+						<th>9</th>
+						<th>10</th>
+						<th>11</th>
+						<th>12</th>
+						<th>13</th>
+						<th>14</th>
+						<th>15</th>
+						<th>16</th>
+						<th>17</th>
+						<th>18</th>
+						<th>19</th>
+						<th>20</th>
+						<th>21</th>
+						<th>22</th>
+						<th>23</th>
+						<th>24</th>
+						<th>25</th>
+						<th>26</th>
+						<th>27</th>
+						<th>28</th>
+						<th>29</th>
+						<th>30</th>
+						<th>31</th>
+					</tr>'
+					.$table.
+				'</table>';
+				
+
+	//garbage collection
+	$result->close();
+	unset($obj);
+	unset($sql);
+	unset($query);
+	$mysqli->close();
+
+	echo $table;        
 }
 ?>

@@ -14,7 +14,7 @@ if (isset($_GET['view'])) {
 	$view = 'summary';
 }
 
-if (isset($_GET['main'])) {
+if (!empty($_GET['main'])) {
 	$main_view = $_GET['main'];
 } else {
 	$main_view = 'map';
@@ -31,12 +31,10 @@ if (!empty($_POST['chill_submit'])) {
 	$end_date = strftime("%Y-%m-%d",strtotime($_POST['end_date']));
     $chill = chill_calculate_chill($aws_id, $start_date, $end_date);
 	$aws_content = chill_show_results($aws_id, $start_date, $end_date, $chill);
-} else if (isset($_GET['view'])) {
-    if ($_GET['view'] == 'chill') { //present form to user
-        $aws_content = chill_show_form();
-    } else {
-        $aws_content = generate_aws_content($aws_id, $view, $main_view);
-    }
+} else if (!empty($_GET['view']) and $_GET['view'] == 'chill') { //present form to user
+    $aws_content = chill_show_form();
+} else {
+    $aws_content = generate_aws_content($aws_id, $view, $main_view);
 }
 
 $ga_code = google_analytics_samdb();
