@@ -139,6 +139,7 @@ function generate_breadcrumbs($aws_id) {
 	return $ret;
 }
 
+// TODO: fix display of monthly airT_min & rh_min
 function make_aws_content_data($aws_id, $view) {
     $d = get_graph_data($aws_id, $view);
     switch ($view) {
@@ -164,80 +165,79 @@ function make_aws_content_data($aws_id, $view) {
     switch ($view) {
         case 'today';
         case 'yesterday';
-            // make HTML table
-            $html .= make_table_hourly($d, $time_name);
             // make graphs                            
             $title = $time_name.'\'s temperatures for ' . $d[0];
             $is_bar_graph = 'false';
             $colour = 'red';
-            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['airT'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s temperatures"/></p>';
+            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['airT'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s temperatures"/></p>'."\n";
             $title = $time_name.'\'s rain for ' . $d[0];
             $is_bar_graph = 'true';
             $colour = 'blue';
-            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rain'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s rain"/></p>';
+            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rain'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s rain"/></p>'."\n";
             $title = $time_name.'\'s relative humidity for ' . $d[0];
             $is_bar_graph = 'false';
             $colour = 'purple';
-            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rh'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s relative humidity"/></p>';
+            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rh'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s relative humidity"/></p>'."\n";
             $title = $time_name.'\'s solar radiation (GSR) for ' . $d[0];
             $is_bar_graph = 'true';
             $colour = 'red';
-            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['gsr'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s solar radiation"/></p>';
+            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['gsr'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s solar radiation"/></p>'."\n";
             $title = $time_name.'\'s windspeeds for ' . $d[0];
             $data = array(
                 'min' => null,
                 'avg' => $d[1]['Wavg'],
                 'max' => $d[1]['Wmax']
             );
-            $html .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s windspeeds"/></p>';
+            $html .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s windspeeds"/></p>'."\n";
+
+            // make HTML table
+            $html .= make_table_hourly($d, $time_name)."\n\n";            
             break;
         case '7days';            
         case '30days';
         case 'monthly';
-            // make HTML table
-            $html .= make_table_daily($d, $time_name);
             // make graphs
             $title = $time_name.'\'s ET for ' . $d[0] . ' (mm)';
             $is_bar_graph = 'true';
             $colour = 'red';
-            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['et_asce_t'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s ET"/></p>';  
+            $html .= '<p><img src="graph.php?title='.urlencode($title).'&amp;data='.urlencode(serialize($d[1]['et_asce_t'])).'&amp;is_bar_graph='.$is_bar_graph.'&amp;colour='.$colour.'"  alt="no data for '.$time_name.'\'s ET"/></p>'."\n";  
             $title = $time_name.'\'s rain for ' . $d[0] . ' (mm)';
             $is_bar_graph = 'true';
             $colour = 'blue';
-            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['rain'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s rain"/></p>';                            
-            $title = '$time_name\'s temperatures for ' . $d[0] . ' (deg C)';
+            $html .= '<p><img src="graph.php?title='.urlencode($title).'&amp;data='.urlencode(serialize($d[1]['rain'])).'&amp;is_bar_graph='.$is_bar_graph.'&amp;colour='.$colour.'"  alt="no data for '.$time_name.'\'s rain"/></p>'."\n";                            
+            $title = $time_name.'\'s temperatures for ' . $d[0] . ' (deg C)';
             $data = array(
-                'min' => $d[1]['airT_min'],
+                'min' => null,
                 'avg' => $d[1]['airT_avg'],
                 'max' => $d[1]['airT_max']
             );
-            $html .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for '.$time_name.'\'s temperatures"/></p>';
+            $html .= '<p><img src="graph.php?is_multi=true&amp;title='.urlencode($title).'&amp;data='.urlencode(serialize($data)).'"  alt="no data for '.$time_name.'\'s temperatures"/></p>'."\n";
             $title = $time_name.'\'s relative humidity for ' . $d[0] . ' (%)';
             $data = array(
-                'min' => $d[1]['rh_min'],
+                'min' => null,
                 'avg' => $d[1]['rh_avg'],
                 'max' => $d[1]['rh_max']
             );
-            $html .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for last '.$time_name.'\'s relative humidity"/></p>';
+            $html .= '<p><img src="graph.php?is_multi=true&amp;title='.urlencode($title).'&amp;data='.urlencode(serialize($data)).'"  alt="no data for last '.$time_name.'\'s relative humidity"/></p>'."\n";
             $title = $time_name.'\'s solar radiation for ' . $d[0] . ' (KW/m2)';
             $is_bar_graph = 'true';
             $colour = 'red';
-            $html .= '<p><img src="graph.php?title='.$title.'&data='.urlencode(serialize($d[1]['gsr'])).'&is_bar_graph='.$is_bar_graph.'&colour='.$colour.'"  alt="no data for '.$time_name.'\'s solar radiation"/></p>';  
+            $html .= '<p><img src="graph.php?title='.urlencode($title).'&amp;data='.urlencode(serialize($d[1]['gsr'])).'&amp;is_bar_graph='.$is_bar_graph.'&amp;colour='.$colour.'"  alt="no data for '.$time_name.'\'s solar radiation"/></p>'."\n";  
             $title = $time_name.'\'s wind speeds for ' . $d[0] . ' (km/h)';
             $data = array(
                 'min' => null,
                 'avg' => $d[1]['Wavg'],
                 'max' => $d[1]['Wmax']
             );
-            $html .= '<p><img src="graph.php?is_multi=true&title='.$title.'&data='.urlencode(serialize($data)).'"  alt="no data for '.$time_name.'\'s wind speeds"/></p>';
+            $html .= '<p><img src="graph.php?is_multi=true&amp;title='.urlencode($title).'&amp;data='.urlencode(serialize($data)).'"  alt="no data for '.$time_name.'\'s wind speeds"/></p>'."\n";
+            
+            // make HTML table
+            $html .= make_table_daily($d, $time_name)."\n\n";            
             break;
     }    
     
     return $html;
 }
-// TODO: complete the views finyear download summary
-// TODO: fix the graphs for monthly temp & RH
-// TODO: fix footer breaking code
 function generate_aws_content($aws_id, $view, $main_view)  {
 	$aws_content = "\n\n<!-- //////////////weatherstation content/////////////////////////////////////////////////////// -->\n\n";
 
@@ -260,16 +260,13 @@ function generate_aws_content($aws_id, $view, $main_view)  {
             // connect to DB using mysqli
             include('db-connection.php');
 
-            $sql = "SELECT tbl_stations.name, tbl_districts.name AS district FROM tbl_stations INNER JOIN tbl_districts ON district_id = id WHERE aws_id =  '".$aws_id."'";
+            $sql = "SELECT name FROM tbl_stations WHERE aws_id =  '".$aws_id."'";
             
             if ($result = $mysqli->query($sql)) {
                 while($obj = $result->fetch_object()) {
                     $name = $obj->name;
                     $aws_content .= '<h3>'.$name.' Raingauge</h3>';
-                    $aws_content .= get_include_contents('table_raingauge_summary.php');
-                    $aws_content .= '<p></p>';
-                    $aws_content .= get_include_contents('table_rain.php');
-                    $aws_content .= '<p><b>NOTE: where there are differences between the summary and the full data table, always follow the summary table. Results will be consistent across tables after June \'11 when this new system is fully operational.</b></p>';
+                    $aws_content .= '<h4 style="color:red;">This web page for rainguages is being updated.</h4>';
                 }	
             }
             unset($result);
@@ -281,7 +278,6 @@ function generate_aws_content($aws_id, $view, $main_view)  {
             //this is a full AWS, not a TBRG
             $aws_content .= '<p id="regularity_note">These weatherstations record data every 15 minutes but only reports to the web on the hour.</p>
             <div id="single_station_links">
-                Observations:&nbsp;
                 <a href="?aws_id='. $aws_id .'&amp;view=summary">Summary</a> |
                 <a href="?aws_id='. $aws_id .'&amp;view=today">Today</a> |
                 <a href="?aws_id='. $aws_id .'&amp;view=yesterday">Yesterday</a> |
@@ -302,14 +298,13 @@ function generate_aws_content($aws_id, $view, $main_view)  {
                     $aws_content .= make_aws_content_data($aws_id, $view);
                     break;	
                 case "finyr":
-                    $aws_content .= get_include_contents('table_finyr.php');
-                    $aws_content .= '<p></p>';
+                    $aws_content .= '<h4 style="color:red;">This view is being updated</h4>';
                     break;			
                 case "download":
                     $aws_content .= view_download();
                     break;			
                 default:	//table_summary	
-                    $aws_content .= get_include_contents('table_summary.php');
+                    $aws_content .= make_station_summary($aws_id);
                     break;
 			}
 		}
@@ -494,7 +489,7 @@ function main_map(&$head_additions) {
 	//generate my JS
     // connect to DB using mysqli
     include('db-connection.php');
-							
+
 	//get the map centre
 	$sql = "SELECT 
 				ROUND(AVG(lon),6) AS lon_avg, 
@@ -504,10 +499,8 @@ function main_map(&$head_additions) {
 	$lat_avg = -34.397;
 	$lon_avg = 150.644;
 	
-	if ($result = $mysqli->query($sql))
-	{
-		while($obj = $result->fetch_object())
-		{
+	if ($result = $mysqli->query($sql)) {
+        while($obj = $result->fetch_object()) {
 			$lon_avg = $obj->lon_avg;
 			$lat_avg = $obj->lat_avg;
 		}
@@ -515,7 +508,7 @@ function main_map(&$head_additions) {
 	unset($result);
 	
 	//get all the place markers
-	$js_addition .= '		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	$js_addition = '		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {			
 			var myLatlng = new google.maps.LatLng('.$lat_avg.', '.$lon_avg.');
@@ -534,10 +527,8 @@ function main_map(&$head_additions) {
 			;
 			
 	$sql = 	"SELECT aws_id, name, lon, lat FROM tbl_stations WHERE owner = 'SAMDB' AND lat IS NOT NULL;";
-	if ($result = $mysqli->query($sql))
-	{
-		while($obj = $result->fetch_object())
-		{
+	if ($result = $mysqli->query($sql)) {
+		while($obj = $result->fetch_object()) {
 			$js_addition .= "\n\n";
 			$aws_id = $obj->aws_id;
 		$js_addition .= '			var aws_marker'.$aws_id.' = new google.maps.Marker({
@@ -567,7 +558,7 @@ function main_map(&$head_additions) {
 		</script>';
 
 	//generate the map's HTML
-	$ret .= "\n\n";
+	$ret = "\n\n";
 	$ret .= '			<div id="map_canvas"></div>'."\n\n";
 	$ret .= '			<ul>
 				<li><b>Click</b> on a marker to see the latest hour\'s readings in brief</li>
@@ -579,67 +570,68 @@ function main_map(&$head_additions) {
 	//return the HTML
 	return $ret;
 }
-
-
-// TODO: CALL function
 function get_map_summary($aws_id) {
-	$mysqli = new mysqli("localhost", "aws", "ascetall", "aws")
-			or die ('Error connecting to mysql: ' . mysqli_error($mysqli));
-		
-	$sql1 =	"CALL summary_latest_hour('".$aws_id."');";
-	if ($result1 = $mysqli->query($sql1))
-	{
-		while($obj1 = $result1->fetch_object())
-		{			
-			$name = $obj1->name;
-			$latest_reading = $obj1->latest;
-			$latest_airT = $obj1->airT_avg;
-			$latest_appT = $obj1->appT_avg;
-			$latest_dp = $obj1->dp_avg;
-			$latest_rh = $obj1->rh_avg;
-			$latest_deltaT = $obj1->deltaT_avg;
-			$latest_rain_earlier = $obj1->rain_sum_earlier;		
-			$latest_rain_later = $obj1->rain_sum_later;
-		}		
-	}	
+    // connect to DB using mysqli
+    include('db-connection.php');
+    
+    // latest hour
+    $sql = "SELECT 
+        name,
+        DATE_FORMAT(MAX(stamp), '%H:%i') AS latest,
+        ROUND(AVG(airT),1) AS airT_avg, 
+        ROUND(AVG(appT),1) AS appT_avg, 
+        ROUND(AVG(dp),1) AS dp_avg, 
+        ROUND(AVG(rh),1) AS rh_avg, 
+        ROUND(AVG(deltaT),1) AS deltaT_avg,
+        SUM(rain) AS rain
+    FROM
+    (SELECT * FROM tbl_data_minutes WHERE aws_id = '".$aws_id."' ORDER BY stamp DESC LIMIT 4) AS latest_hour
+    INNER JOIN tbl_stations 
+    ON latest_hour.aws_id = tbl_stations.aws_id
+    GROUP BY latest_hour.aws_id;";
+    
+    $html = '<table class="table_data" style="width: 375px;">';
+	if ($result = $mysqli->query($sql)) {
+		while($obj = $result->fetch_object()) {
+            $html .= '<table class="table_data" style="width:450px;">'.
+                        '<tr>'.
+                            '<th colspan="6">Latest reading for <span style="font-size:14px;">'.$obj->name.'</span> at: '.$obj->latest.'</th>'.
+                        '</tr>'.
+                        '<tr>'.
+                            '<td style="width:75px;">Air Temp</td>'.
+                            '<td style="width:75px;">App Tem</td>'.
+                            '<td style="width:75px;">Dew Pt</td>'.
+                            '<td style="width:75px;">RH</td>'.
+                            '<td style="width:75px;">Delta-T</td>'.
+                            '<td style="width:75px;">rain</td>'.
+                        '</tr>'.
+                        '<tr>'.
+                            '<td>'.$obj->airT_avg.'&deg;C</td>'.
+                            '<td>'.$obj->appT_avg.'&deg;C</td>'.
+                            '<td>'.$obj->dp_avg.'&deg;C</td>'.
+                            '<td>'.$obj->rh_avg.'%</td>'.
+                            '<td>'.$obj->deltaT_avg.'&deg;C</td>'.
+                            '<td>'.$obj->rain.'mm</td>'.
+                        '</tr>'.
+                    '</table>';
+        }
+    }
+    $html .= '</table>';
 	
-	$latest_reading = strftime("%d/%m, %H:00",strtotime($latest_reading));
-	$ret = "<table class=\"table_data\" style=\"width:375px\">".
-				"<tr>".
-					"<th colspan=\"5\">Latest reading for <span style=\"font-size:14px;\">$name</span> at: $latest_reading</th>".
-				"</tr>".
-				"<tr>".
-					"<td style=\"width:75px;\">Air Temp</td>".
-					"<td style=\"width:75px;\">App Tem</td>".
-					"<td style=\"width:75px;\">Dew Pt</td>".
-					"<td style=\"width:75px;\">RH</td>".
-					"<td style=\"width:75px;\">Delta-T</td>".
-				"</tr>".
-				"<tr>".
-					"<td>$latest_airT &deg;C</td>".
-					"<td>$latest_appT &deg;C</td>".
-					"<td>$latest_dp &deg;C</td>".
-					"<td>$latest_rh %</td>".
-					"<td>$latest_deltaT &deg;C</td>".
-				"</tr>".
-			"</table>";																
-	
-	return $ret;
+	return $html;
 }
 
 
-// TODO: CALL function
 function main_15min() {
     // connect to DB using mysqli
     include('db-connection.php');
 		
-	$sql = 	"CALL main_latest_15min('SAMDB');";
+	$sql = 	"CALL proc_minutes_latest('SAMDB');";
 	$mysqli->query($sql);
-	$sql = "SELECT * FROM readings_15min;";
+	$sql = "SELECT * FROM tbl_temp_data_minutes_latest ORDER BY name;";
 	
 	$ret = '';
-	if ($result = $mysqli->query($sql))
-	{
+	if ($result = $mysqli->query($sql)) {
 		$ret .= '<table class="table_data">
 				<tr><th colspan="17"><span style="font-weight:400; font-size:18px; line-size:25px;">Region Summary (latest 15-minute record)</span></th></tr>
 				<tr>
@@ -657,8 +649,7 @@ function main_15min() {
 					<th>Rain<br />mm</th>
 				</tr>';
 				   		
-		while($obj = $result->fetch_object())
-		{
+		while($obj = $result->fetch_object()) {
 			$ret .= "<tr>
 						<td><a href=\"?aws_id=$obj->aws_id\">$obj->name</a></td>					
 						<td>".date("d/m/Y H:i",strtotime($obj->stamp))."</td>
@@ -679,18 +670,16 @@ function main_15min() {
 	}
 	return $ret;	
 }
-
 function main_daily() {
     // connect to DB using mysqli
     include('db-connection.php');
 		
 	$sql = 	"CALL proc_days_latest('SAMDB');";
 	$mysqli->query($sql);
-	$sql = "SELECT * FROM tbl_temp_data_days_latest;";
+	$sql = "SELECT * FROM tbl_temp_data_days_latest ORDER BY name;";
 	
 	$ret = '';
-	if ($result = $mysqli->query($sql))
-	{
+	if ($result = $mysqli->query($sql)) {
 		$ret .= '<table class="table_data">
 				<tr><th colspan="17"><span style="font-weight:400; font-size:18px; line-size:25px;">Region Summary (latest daily record)</span></th></tr>
 				<tr>
@@ -708,8 +697,7 @@ function main_daily() {
 					<th>ET (ASCE s)<br />mm</th>
 				</tr>';
 				   		
-		while($obj = $result->fetch_object())
-		{
+		while($obj = $result->fetch_object()) {
 			$ret .= "<tr>
 						<td><a href=\"?aws_id=$obj->aws_id\">$obj->name</a></td>					
 						<td>".date("d/m/Y",strtotime($obj->stamp))."</td>
@@ -730,32 +718,34 @@ function main_daily() {
 	}
 	return $ret;
 }
-
 function view_download() {
     // connect to DB using mysqli
     include('db-connection.php');
 	
 	$sql = "SELECT name FROM tbl_stations WHERE aws_id = '".$_GET['aws_id']."';";
 	$name = '';
-	if ($result = $mysqli->query($sql))
-	{
-		while($obj = $result->fetch_object())
-		{
+	if ($result = $mysqli->query($sql)) {
+		while($obj = $result->fetch_object()) {
 			$name = $obj->name;
-		}		
-	}	
-		
-	$ret = "<h3>Download data for $name</h3>";
+		}
+	}
+	
+    $ret = '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">';
+    $ret .= '<script src="//code.jquery.com/jquery-1.10.2.js"></script>';
+    $ret .= '<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>';
+	$ret .= '<h2>Download data for '.$name.'</h2>';
 	$ret .= '<h4>Choose the timespan and the type of readings you wish to download:</h4>
             <script>
-                $(document).ready(function() {                    
+                $(document).ready(function() {
+                    $(".datepicker").datepicker({"dateFormat": "yy-mm-dd"});
+                
                     $("#download_data").click(function() {
                         console.log("data_download");
                         var i = $("#aws_id").val();
                         var s = $("#start").val();
                         var e = $("#end").val();
                         var f = $("input[name=format]:checked").val();
-                        var url = "http://aws-samdbnrm.sa.gov.au/data_download.php?aws_id="+i+"&start="+s+"&end="+e+"&format="+f+"";
+                        var url = "http://'.$_SERVER['SERVER_ADDR'].'/data_download.php?aws_id="+i+"&start="+s+"&end="+e+"&format="+f+"";
                         console.log(url);
                         window.location = url;
                         
@@ -765,7 +755,7 @@ function view_download() {
                         console.log("data_download_ires");
                         var i = $("#aws_id_ires").val();
                         var f = $("input[name=et_type]:checked").val();
-                        var url = "http://aws-samdbnrm.sa.gov.au/data_download_ires.php?aws_id="+i+"&et_type="+f+"";
+                        var url = "http://'.$_SERVER['SERVER_ADDR'].'/data_download_ires.php?aws_id="+i+"&et_type="+f+"";
                         console.log(url);
                         window.location = url;
                         
@@ -779,19 +769,17 @@ function view_download() {
 				<table class="format">
 				<tr>
 					<td>Start:</td>
-					<td><input type="text" name="start" id="start" size="10" class="datepicker" /> (dd/mm/yyyy format, earliest 01/07/2006, most stations)</td>
+					<td><input type="text" name="start" id="start" size="10" class="datepicker" /><br />(earliest 01/07/2006, most stations)</td>
 				</tr>
 				<tr>
 					<td>End:</td>
-
-					<td><input type="text" name="end" id="end" size="10" class="datepicker" /> (dd/mm/yyyy format, put in <b>latest</b> for latest)</td>
+					<td><input type="text" name="end" id="end" size="10" class="datepicker" /><br />(put in <b>latest</b> for latest)</td>
 				</tr>
 				<tr>
 					<td>Timestep:&nbsp;</td>
 					<td>
 						15 min:<input type="radio" name="format" value="15min" /><br />
 						Daily : <input type="radio" name="format" value="day" checked="checked" />
-
 					</td>
 				</tr>
 				<tr>
@@ -800,6 +788,7 @@ function view_download() {
 				</tr>
 				</table>
 			</div>
+            <!--
 			<p>&nbsp;</p>
 			<h3>IRES Download</h3>
             <div>
@@ -808,27 +797,57 @@ function view_download() {
 				ET (short): <input type="radio" name="et_type" value="short" checked="checked" /><br />
 				ET (tall):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="et_type" value="tall"  /><br />
 				<td><button id="download_ires">Download</button></td>
-			</div>';
+			</div>
+            -->';
 			
 	return $ret;
 }
-
-
-
-function view_download_rainguage() {	
-	$ret = '<h3>Download data</h3>
-			<h4>Choose the timespan and the type of readings you wish to download:</h4>
-			<form method="post" action="data_download_rainguage.php">
-				<input type="hidden" name="aws_id" value="'.$_GET['aws_id'].'" />
+function view_download_rainguage() {
+    // connect to DB using mysqli
+    include('db-connection.php');
+	
+	$sql = "SELECT name FROM tbl_stations WHERE aws_id = '".$_GET['aws_id']."';";
+	$name = '';
+	if ($result = $mysqli->query($sql)) {
+		while($obj = $result->fetch_object()) {
+			$name = $obj->name;
+		}
+	}
+	
+    $ret = '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">';
+    $ret .= '<script src="//code.jquery.com/jquery-1.10.2.js"></script>';
+    $ret .= '<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>';
+	$ret .= '<h2>Download data for '.$name.'</h2>';
+	$ret .= '<h4>Choose the timespan and the type of readings you wish to download:</h4>
+            <script>
+                $(document).ready(function() {
+                    $(".datepicker").datepicker({"dateFormat": "yy-mm-dd"});
+                
+                    $("#download_data").click(function() {
+                        console.log("data_download");
+                        var i = $("#aws_id").val();
+                        var s = $("#start").val();
+                        var e = $("#end").val();
+                        var f = $("input[name=format]:checked").val();
+                        var url = "http://'.$_SERVER['SERVER_ADDR'].'/data_download_raingauge.php?aws_id="+i+"&start="+s+"&end="+e+"&format="+f+"";
+                        console.log(url);
+                        window.location = url;
+                        
+                        return false;
+                    });
+                });
+            </script>
+			<div>
+                <input type="hidden" name="location" value="data_download" />
+				<input type="hidden" id="aws_id" name="aws_id" value="'.$_GET['aws_id'].'" />
 				<table class="format">
 				<tr>
 					<td>Start:</td>
-					<td><input type="text" name="start" id="start" size="10" /> (dd/mm/yyyy format, earliest 01/07/2006, most stations)</td>
+					<td><input type="text" name="start" id="start" size="10" class="datepicker" /><br />(earliest 01/07/2006, most stations)</td>
 				</tr>
 				<tr>
 					<td>End:</td>
-
-					<td><input type="text" name="end" size="10" /> (dd/mm/yyyy format, put in <b>latest</b> for latest)</td>
+					<td><input type="text" name="end" id="end" size="10" class="datepicker" /></td>
 				</tr>
 				<tr>
 					<td>Timestep:&nbsp;</td>
@@ -839,10 +858,21 @@ function view_download_rainguage() {
 				</tr>
 				<tr>
 					<td></td>
-					<td><input type="submit" value="Download" /></td>
+					<td><button id="download_data">Download</button></td>
 				</tr>
 				</table>
-			</form>';
+			</div>
+            <!--
+			<p>&nbsp;</p>
+			<h3>IRES Download</h3>
+            <div>
+                <input type="hidden" name="location" value="data_download_ires" />
+				<input type="hidden" id="aws_id_ires" name="aws_id_ires" value="'.$_GET['aws_id'].'" />
+				ET (short): <input type="radio" name="et_type" value="short" checked="checked" /><br />
+				ET (tall):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="et_type" value="tall"  /><br />
+				<td><button id="download_ires">Download</button></td>
+			</div>
+            -->';
 			
 	return $ret;
 }
@@ -881,31 +911,33 @@ function chill_show_form() {
     <h2>Chill Calculator</h2>
     <p>This form lets you calculate chill hours for two threshold values (7&deg;C and 10&degC) as well as <em>chill portions</em> for any station for any time period.</p>
     <p><em>Chill Portions</em>, the more advanced calculation, is explained by the <a href="http://fruitsandnuts.ucdavis.edu/Weather_Services/chilling_accumulation_models/CropChillReq/">University of California Davis\' website</a>.</p>
-    <form action="index.php" method="post">
-        <table>
-            <tr>
-                <td>Station</td>
-                <td>
-                    <select name="aws_id">
-                        '.$options.'
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Start date:</td><td><input type="text" id="start_date" name="start_date" style="width:150px;" /></td>
-            </tr>
-            <tr>
-                <td>End date:</td><td><input type="text" id="end_date" name="end_date" style="width:150px;" /></td>
-            </tr>
-            <tr>
-                <td></td><td><input type="submit" name="chill_submit" value="Calculate Chill" /></td>
-            </tr>
-        </table>
-    </form>
+    <table>
+        <tr>
+            <td>Station</td>
+            <td>
+                <select id="aws_id">
+                    '.$options.'
+                </select>
+            </td>
+        </tr>
+        <tr><td>Start date:</td><td><input type="text" id="start_date" name="start_date" style="width:150px;" /></td></tr>
+        <tr><td>End date:</td><td><input type="text" id="end_date" name="end_date" style="width:150px;" /></td></tr>
+        <tr><td></td><td><button id="chill_submit">Calculate Chill</button></td></tr>
+    </table>
     <script>
         $(document).ready(function() {
-            jQuery("#start_date").datepicker({dateFormat: "dd-mm-yy"});
-            jQuery("#end_date").datepicker({dateFormat: "dd-mm-yy"});
+            $("#start_date").datepicker({dateFormat: "yy-mm-dd"});
+            $("#end_date").datepicker({dateFormat: "yy-mm-dd"});
+            
+            $("#chill_submit").click(function() {
+                var aws_id = $("#aws_id").val();
+                var start_date = $("#start_date").val();
+                var end_date = $("#end_date").val();
+                var url = "http://'.$_SERVER['SERVER_ADDR'].'?aws_id=" + aws_id + "&view=chillresult&start_date=" + start_date + "&end_date=" + end_date;
+                console.log(url);
+                window.location.href = url;
+                return false;
+            });
         });
     </script>     
     ';
@@ -913,33 +945,28 @@ function chill_show_form() {
     return $resp;    
 }
 
-// TODO: CALL function
 function chill_calculate_chill($aws_id, $start_date, $end_date) {
 	$chill_hours_7 = 0;
 	$chill_hours_10 = 0;
 	$chill_portions = 0;
 
-	$mysqli = new mysqli("localhost", "aws", "ascetall", "aws")
-	    or die ('Error connecting to mysql: ' . mysqli_error($mysqli));
+    // connect to DB using mysqli
+    include('db-connection.php');
+	$sql = "CALL proc_chill(?, ?, ?);";
 
-	$sql = "CALL chill(?,?,?);";
-
-	if (!($stmt = $mysqli->prepare($sql))) {
-	    echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
-	}
-
-	$stmt->bind_param('sss',$aws_id, $start_date, $end_date);
-
-	if (!$stmt->execute()) {
-	    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-	}
-
-	if (!$stmt->bind_result($chill_hours_7, $chill_hours_10, $chill_portions)) {
-	    echo "Bind failed: (" . $stmt->errno . ") " . $stmt->error;
-	}
-
-	$stmt->fetch();
-
+	$stmt = $mysqli->prepare($sql);
+	$stmt->bind_param('sss', $aws_id, $start_date, $end_date);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->close();
+    
+    $stmt2 = $mysqli->prepare("SELECT * FROM tbl_temp_chill;");
+    $stmt2->execute();
+    $stmt2->store_result();
+    $stmt2->bind_result($chill_hours_7, $chill_hours_10, $chill_portions);
+    while($stmt2->fetch()) {
+        return array($chill_hours_7, $chill_hours_10, $chill_portions);
+    }    
 	return array($chill_hours_7, $chill_hours_10, $chill_portions);
 }
 
@@ -959,8 +986,8 @@ function chill_show_results($aws_id, $start_date, $end_date, $chill) {
     $stmt->close();
 
     $resp = '
-    <h4>Chill Results</h4>
-    <p>For station <strong>'.$name.'</strong> over date range '.$start_date.' to '.$end_date.'</p> 
+    <h2>Chill Results for '.$name.'</h2>
+    <p>For date range '.$start_date.' to '.$end_date.'</p> 
     <table>
 	<tr>
 	    <td>Hours &lt; 7&deg;C:</td><th>'.$chill[0].'</th>
@@ -976,7 +1003,6 @@ function chill_show_results($aws_id, $start_date, $end_date, $chill) {
     
     return $resp;
 }
-
 
 
 function google_analytics_samdb() {
@@ -1072,7 +1098,7 @@ function get_graph_data($aws_id, $view) {
             ON tbl_data_days.aws_id = tbl_stations.aws_id
             WHERE tbl_data_days.aws_id = '" . $aws_id . "'
             GROUP BY YEAR(stamp), MONTH(stamp)
-            ORDER BY YEAR(stamp) DESC, MONTH(stamp);";
+            ORDER BY YEAR(stamp), MONTH(stamp);";
             break;        
     }
 
@@ -1171,58 +1197,15 @@ function get_graph_data($aws_id, $view) {
     
     return array($name, $data);
 }
-
-function make_graph($title, $data, $is_bar_graph, $colour) {
-    include('phpgraphlib.php');
-    $graph = new PHPGraphLib(530,250);
-    $graph->addData($data);
-    if ($is_bar_graph) {
-        $graph->setBars(true);
-        $graph->setLine(false);
-        $graph->setBarColor($colour);
-    } else {
-        $graph->setBars(false);
-        $graph->setLine(true);
-        $graph->setLineColor($colour);
-        $graph->setDataPoints(true);
-        $graph->setDataPointSize(4);
-        $graph->setDataPointColor($colour);
-    }
-    
-    $graph->setTitle($title);
-    $graph->setTitleColor("88,89,91");
-    $graph->setXValuesVertical(false);
-    $graph->createGraph();
+// TODO: complete
+function make_table_rainguage_minutes() {
+    // connect to DB using mysqli
+    include('db-connection.php');
 }
-
-
-function make_graph_multi_line($title, $data_min, $data_avg, $data_max) {
-    include('phpgraphlib.php');
-    $graph = new PHPGraphLib(530,250);
-    
-    $graph->setBars(false);
-    $graph->setLine(true);         
-    $graph->setTitle($title);
-    $graph->setTitleColor("88,89,91");
-    $graph->setXValuesVertical(false);
-    $graph->setDataPoints(true);
-    $graph->setDataPointSize(4);
-    $graph->setDataPointColor('purple');
-    $graph->setLegend(true);
-    if (empty($data_min)) {
-        $graph->addData($data_avg);
-        $graph->addData($data_max);            
-        $graph->setLineColor('purple', 'red');
-        $graph->setLegendTitle('avg', 'max');
-    } else {
-        $graph->addData($data_min);
-        $graph->addData($data_avg);
-        $graph->addData($data_max);
-        $graph->setLineColor('blue', 'purple', 'red');
-        $graph->setLegendTitle('min', 'avg', 'max');
-    }
-    
-    $graph->createGraph();
+// TODO: complete
+function make_table_rainguage_days() {
+    // connect to DB using mysqli
+    include('db-connection.php');
 }
 function make_table_hourly($data, $time_name) {
     $html = '<table class="table_data"  id="table_today">';
@@ -1240,7 +1223,7 @@ function make_table_hourly($data, $time_name) {
                 <th>Wind Max<br />km/h</th>
                 <th>Wind Dir<br />&deg;</th>
                 <th>Rain<br />mm</th>
-            </tr>';
+            </tr>'."\n";
             
     foreach ($data[1]['airT'] as $k => $v) {
         $html .= '<tr>';
@@ -1256,10 +1239,10 @@ function make_table_hourly($data, $time_name) {
         $html .= '  <td>'.$data[1]['Wmax'][$k].'</td>';
         $html .= '  <td>'.$data[1]['Wdir'][$k].'</td>';
         $html .= '  <td>'.$data[1]['rain'][$k].'</td>';
-        $html .= '<tr>';
+        $html .= '</tr>'."\n";
     }
 
-    $html .= '<table>';
+    $html .= '</table>'."\n"."\n";
   
     return $html;
 }
@@ -1281,7 +1264,7 @@ function make_table_daily($data, $time_name) {
                 <th>Frost<br />Hrs<br />mm</th>
                 <th>Deg Days<br />mm</th>
                 <th>ET<sub>asce t</sub><br />mm</th>
-            </tr>';
+            </tr>'."\n";
             
     foreach ($data[1]['airT_avg'] as $k => $v) {
         $html .= '<tr>';
@@ -1299,10 +1282,10 @@ function make_table_daily($data, $time_name) {
         $html .= '  <td>'.$data[1]['frost_hrs'][$k].'</td>';
         $html .= '  <td>'.$data[1]['deg_days'][$k].'</td>';
         $html .= '  <td>'.$data[1]['et_asce_t'][$k].'</td>';
-        $html .= '<tr>';
+        $html .= '</tr>'."\n";
     }
 
-    $html .= '<table>';
+    $html .= '</table>'."\n"."\n";
   
     return $html;
 }
@@ -1490,5 +1473,97 @@ function make_table_monthly_rain($aws_id, $name) {
 	$mysqli->close();
 
 	echo $table;        
+}
+function make_station_summary($aws_id) {
+    // connect to DB using mysqli
+    include('db-connection.php');
+    
+    // latest hour
+    $sql = "SELECT 
+        name,
+        MAX(stamp) AS latest,
+        ROUND(AVG(airT),1) AS airT_avg, 
+        ROUND(AVG(appT),1) AS appT_avg, 
+        ROUND(AVG(dp),1) AS dp_avg, 
+        ROUND(AVG(rh),1) AS rh_avg, 
+        ROUND(AVG(deltaT),1) AS deltaT_avg,
+        SUM(rain) AS rain
+    FROM
+    (SELECT * FROM tbl_data_minutes WHERE aws_id = '".$aws_id."' ORDER BY stamp DESC LIMIT 4) AS latest_hour
+    INNER JOIN tbl_stations 
+    ON latest_hour.aws_id = tbl_stations.aws_id
+    GROUP BY latest_hour.aws_id;";
+    
+    $html = '<table class="table_data" style="width: 600px;">';
+	if ($result = $mysqli->query($sql)) {
+		while($obj = $result->fetch_object()) {
+			$name = $obj->name;
+            $html .= '<tr><th colspan="4">Latest hour\'s observation: '.$obj->latest.'</th></tr>';
+            $html .= '<tr><td><strong>Air temp (avg)</strong></td><td>'.$obj->airT_avg.'&deg;C</td><td><strong>Apparent temp (avg)</strong></td><td>'.$obj->appT_avg.'&deg;C</td></tr>';
+            $html .= '<tr><td><strong>Dew Point</strong></td><td>'.$obj->dp_avg.'&deg;C</td><td><strong>Relative Humidity</strong></td><td>'.$obj->rh_avg.'%</td></tr>';
+            $html .= '<tr><td><strong>Delta T</strong></td><td>'.$obj->deltaT_avg.'</td><td><strong>Rain</strong></td><td>'.$obj->rain.'mm</td></tr>';
+        }
+    }
+    $html .= '</table>';
+        
+    // summary of today's readings
+    $sql = "SELECT 
+        SUM(rain) AS rain_total,
+        ROUND(MIN(airT),1) AS airT_min,
+        ROUND(AVG(airT),1) AS airT_avg,
+        ROUND(MAX(airT),1) AS airT_max,
+        ROUND(MIN(appT),1) AS appT_min,
+        ROUND(AVG(appT),1) AS appT_avg,
+        ROUND(MAX(appT),1) AS appT_max,        
+        ROUND(MIN(dp),1) AS dp_min,
+        ROUND(AVG(dp),1) AS dp_avg,
+        ROUND(MAX(dp),1) AS dp_max,
+        ROUND(MIN(rh),1) AS rh_min,
+        ROUND(AVG(rh),1) AS rh_avg,
+        ROUND(MAX(rh),1) AS rh_max
+    FROM
+    (SELECT * FROM tbl_data_minutes WHERE aws_id = 'RMPW12' AND DATE(stamp) = CURDATE() - INTERVAL 20 DAY) AS latest;";
+    
+    $html .= '<table class="table_data" style="width: 600px;">';
+	if ($result = $mysqli->query($sql)) {
+		while($obj = $result->fetch_object()) {
+            $html .= '<tr><th colspan="4">Today\'s data so far:</th></tr>';
+            $html .= '<tr><td><strong>Air Temp<br />(&deg;C)</strong></td><td>'.$obj->airT_max.'<br />'.$obj->airT_avg.'<br />'.$obj->airT_min.'</td><td><strong>App Temp <br />(&deg;C)</strong></td><td>'.$obj->appT_max.'<br />'.$obj->appT_avg.'<br />'.$obj->appT_min.'</td></tr>';
+            $html .= '<tr><td><strong>Dew Point<br />(&deg;C)</strong></td><td>'.$obj->dp_max.'<br />'.$obj->dp_avg.'<br />'.$obj->dp_min.'</td><td><strong>Relative Humidity<br />(%)</strong></td><td>'.$obj->rh_max.'<br />'.$obj->rh_avg.'<br />'.$obj->rh_min.'</td></tr>';
+        }
+    }
+    $html .= '</table>';
+    
+    // yesterday's daily reading
+    $sql = "SELECT * FROM tbl_data_days WHERE aws_id = '".$aws_id."' AND stamp = CURDATE() - INTERVAL 20 DAY;";
+    
+    $html .= '<table class="table_data" style="width: 600px;">';
+	if ($result = $mysqli->query($sql)) {
+		while($obj = $result->fetch_object()) {
+            $html .= '<tr><th colspan="4">Yesterday\'s data:</th></tr>';
+            $html .= '<tr><td><strong>Air Temp<br />(&deg;C)</strong></td><td>'.$obj->airT_max.'<br />'.$obj->airT_avg.'<br />'.$obj->airT_min.'</td><td><strong>App Temp <br />(&deg;C)</strong></td><td>'.$obj->appT_max.'<br />'.$obj->appT_avg.'<br />'.$obj->appT_min.'</td></tr>';
+            $html .= '<tr><td><strong>Dew Point<br />(&deg;C)</strong></td><td>'.$obj->dp_max.'<br />'.$obj->dp_avg.'<br />'.$obj->dp_min.'</td><td><strong>Relative Humidity<br />(%)</strong></td><td>'.$obj->rh_max.'<br />'.$obj->rh_avg.'<br />'.$obj->rh_min.'</td></tr>';
+            $html .= '<tr><td><strong>Rain<br />(mm)</strong></td><td>'.$obj->rain_total.'</td><td><strong>ET<br />(mm)</strong></td><td>'.$obj->et_asce_t.'</td></tr>';
+            $html .= '<tr><td><strong>Degree Days<br /></strong></td><td>'.$obj->deg_days.'</td><td><strong>Frost Hours</strong></td><td>'.$obj->frost_hrs.'</td></tr>';
+        }
+    }
+    $html .= '</table>';
+    
+    // 7 day totals
+    $sql = "SELECT 
+    	SUM(rain_total) AS rain_total,
+    	SUM(et_asce_t) AS et_asce_t_total,
+    	SUM(frost_hrs) AS frost_hrs_total,
+    	SUM(deg_days) AS deg_days_total
+    FROM
+    (SELECT * FROM tbl_data_days WHERE aws_id = '".$aws_id."' AND stamp > CURDATE() - INTERVAL 18 DAY) AS latest_7_days;";
+    
+	//garbage collection
+	$result->close();
+	unset($obj);
+	unset($sql);
+	$mysqli->close();
+    
+    return '<h2>Summary data for '.$name.'</h2>'.$html;
 }
 ?>

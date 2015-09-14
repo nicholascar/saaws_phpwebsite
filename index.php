@@ -33,6 +33,12 @@ if (!empty($_POST['chill_submit'])) {
 	$aws_content = chill_show_results($aws_id, $start_date, $end_date, $chill);
 } else if (!empty($_GET['view']) and $_GET['view'] == 'chill') { //present form to user
     $aws_content = chill_show_form();
+} else if (!empty($_GET['view']) and $_GET['view'] == 'chillresult') { //present results to user
+    $aws_id = $_GET['aws_id'];
+    $start_date = $_GET['start_date'];
+    $end_date = $_GET['end_date'];
+    $chill = chill_calculate_chill($aws_id, $start_date, $end_date);
+    $aws_content = chill_show_results($aws_id, $start_date, $end_date, $chill);
 } else {
     $aws_content = generate_aws_content($aws_id, $view, $main_view);
 }
