@@ -11,7 +11,7 @@
     
     function make_graph($title, $data, $is_bar_graph, $colour) {
 	include('phpgraphlib.php');
-	$graph = new PHPGraphLib(830,300);
+	$graph = new PHPGraphLib(780,300);
         $graph->addData($data);
         if ($is_bar_graph == 'true') {
             $graph->setBars(true);
@@ -34,7 +34,7 @@
     
     function make_graph_multi_line($title, $data_min, $data_avg, $data_max) {
 	include('phpgraphlib.php');
-	$graph = new PHPGraphLib(830,300);        
+	$graph = new PHPGraphLib(780,300);        
         $graph->setBars(false);
         $graph->setLine(true);
         $graph->setDataPoints(true);

@@ -24,7 +24,7 @@ if (!empty($_GET['main'])) {
  * AWS content
  */
 $breadcrumbs = generate_breadcrumbs($aws_id);
-$sidebar = generate_sidebar();
+$sidebar = generate_sidebar('SAMDB');
 if (!empty($_POST['chill_submit'])) {
 	$aws_id = $_POST['aws_id'];
 	$start_date = strftime("%Y-%m-%d",strtotime($_POST['start_date']));
@@ -32,7 +32,7 @@ if (!empty($_POST['chill_submit'])) {
     $chill = chill_calculate_chill($aws_id, $start_date, $end_date);
 	$aws_content = chill_show_results($aws_id, $start_date, $end_date, $chill);
 } else if (!empty($_GET['view']) and $_GET['view'] == 'chill') { //present form to user
-    $aws_content = chill_show_form();
+    $aws_content = chill_show_form('SAMDB');
 } else if (!empty($_GET['view']) and $_GET['view'] == 'chillresult') { //present results to user
     $aws_id = $_GET['aws_id'];
     $start_date = $_GET['start_date'];
@@ -40,7 +40,7 @@ if (!empty($_POST['chill_submit'])) {
     $chill = chill_calculate_chill($aws_id, $start_date, $end_date);
     $aws_content = chill_show_results($aws_id, $start_date, $end_date, $chill);
 } else {
-    $aws_content = generate_aws_content($aws_id, $view, $main_view);
+    $aws_content = generate_aws_content($aws_id, $view, $main_view, 'SAMDB');
 }
 
 $ga_code = google_analytics_samdb();

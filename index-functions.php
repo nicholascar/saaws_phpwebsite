@@ -238,7 +238,7 @@ function make_aws_content_data($aws_id, $view) {
     
     return $html;
 }
-function generate_aws_content($aws_id, $view, $main_view)  {
+function generate_aws_content($aws_id, $view, $main_view, $owner)  {
 	$aws_content = "\n\n<!-- //////////////weatherstation content/////////////////////////////////////////////////////// -->\n\n";
 
 	//correct for broken graph images in Chrome
@@ -319,13 +319,13 @@ function generate_aws_content($aws_id, $view, $main_view)  {
 		
         switch($main_view) {
             case '15min':
-                $aws_content .= main_15min();
+                $aws_content .= main_15min($owner);
                 break;
             case 'daily':
-                $aws_content .= main_daily();
+                $aws_content .= main_daily($owner);
                 break;
             default:
-                $aws_content .= main_map($head_additions);
+                $aws_content .= main_map($owner, $head_additions);
                 break;
 		}
 	}
@@ -334,7 +334,6 @@ function generate_aws_content($aws_id, $view, $main_view)  {
 
 	return $aws_content;
 }
-
 function generate_aws_css() {
 	$ret = "\n<style>
 	
@@ -424,12 +423,12 @@ function generate_aws_css() {
 }
 
 
-function generate_sidebar() {
+function generate_sidebar($owner) {
 	//get SAMDB AWSes
     // connect to DB using mysqli
     include('db-connection.php');
 	
-	$sql = "SELECT aws_id, tbl_stations.name, tbl_districts.name AS district FROM tbl_stations INNER JOIN tbl_districts ON district_id = id WHERE tbl_stations.owner = 'SAMDB' ORDER BY weight, name;";
+	$sql = "SELECT aws_id, tbl_stations.name, tbl_districts.name AS district FROM tbl_stations INNER JOIN tbl_districts ON district_id = id WHERE tbl_stations.owner = '".$owner."' ORDER BY weight, name;";
 	
 	$stations = "";
 	$dist_count = 0;
@@ -481,8 +480,7 @@ function generate_sidebar() {
 	return $ret;
 }
 
-
-function main_map(&$head_additions) {
+function main_map($owner, &$head_additions) {
 	//add the Google JS to index head
 	$head_additions = '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>'."\n";
 	
@@ -495,7 +493,7 @@ function main_map(&$head_additions) {
 				ROUND(AVG(lon),6) AS lon_avg, 
 				ROUND(AVG(lat),6) AS lat_avg 
 			FROM tbl_stations 
-			WHERE OWNER = 'SAMDB' AND lat IS NOT NULL;";
+			WHERE OWNER = '".$owner."' AND lat IS NOT NULL;";
 	$lat_avg = -34.397;
 	$lon_avg = 150.644;
 	
@@ -526,7 +524,7 @@ function main_map(&$head_additions) {
 			'
 			;
 			
-	$sql = 	"SELECT aws_id, name, lon, lat FROM tbl_stations WHERE owner = 'SAMDB' AND lat IS NOT NULL;";
+	$sql = 	"SELECT aws_id, name, lon, lat FROM tbl_stations WHERE owner = '".$owner."' AND lat IS NOT NULL;";
 	if ($result = $mysqli->query($sql)) {
 		while($obj = $result->fetch_object()) {
 			$js_addition .= "\n\n";
@@ -622,11 +620,11 @@ function get_map_summary($aws_id) {
 }
 
 
-function main_15min() {
+function main_15min($owner) {
     // connect to DB using mysqli
     include('db-connection.php');
 		
-	$sql = 	"CALL proc_minutes_latest('SAMDB');";
+	$sql = 	"CALL proc_minutes_latest('".$owner."');";
 	$mysqli->query($sql);
 	$sql = "SELECT * FROM tbl_temp_data_minutes_latest ORDER BY name;";
 	
@@ -670,11 +668,11 @@ function main_15min() {
 	}
 	return $ret;	
 }
-function main_daily() {
+function main_daily($owner) {
     // connect to DB using mysqli
     include('db-connection.php');
 		
-	$sql = 	"CALL proc_days_latest('SAMDB');";
+	$sql = 	"CALL proc_days_latest('".$owner."');";
 	$mysqli->query($sql);
 	$sql = "SELECT * FROM tbl_temp_data_days_latest ORDER BY name;";
 	
@@ -889,11 +887,11 @@ function get_include_contents($filename)  {
 }
 
 
-function chill_show_form() {
+function chill_show_form($owner) {
     // connect to DB using mysqli
     include('db-connection.php');
 	   
-	$sql = "SELECT aws_id, `name` FROM tbl_stations WHERE OWNER = 'SAMDB' AND aws_id NOT LIKE 'TBRG%' ORDER BY `name`;";
+	$sql = "SELECT aws_id, `name` FROM tbl_stations WHERE OWNER = '".$owner."' AND aws_id NOT LIKE 'TBRG%' ORDER BY `name`;";
 	 
 	$options = '';
 	 

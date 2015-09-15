@@ -1,0 +1,24 @@
+.zoneLeft, .zoneRight, .zoneTopInfo, .zoneTop, .horizontalmenu, .zoneBottom
+{
+	display: none;
+}
+.eventCalendarDetail .zoneLeft, .eventCalendarDetail zoneRight
+{
+	display: block;
+}
+.eventCalendarDetail zoneRight
+{
+	float: left;
+}
+.logonReg .zoneLeft, .logonReg .zoneRight
+{
+	display: block;
+}
+.logonReg .zoneRight
+{
+	float: left;
+}	
+.zoneContent
+{
+	float: left !important;
+}

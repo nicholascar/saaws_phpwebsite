@@ -1,0 +1,129 @@
+/* Bring the navigation items closer together (for some reason there is a gap. setting margins, padding, border and outline doesn't seem to fix this) */
+#navigation ul li {
+  margin-bottom: -4px;
+}
+
+/* Change the text-indenting on buttons: http://css-tricks.com/snippets/css/remove-button-text-in-ie7/ */
+#nav_search_form input[type="submit"] {
+  text-transform: capitalize;
+}
+
+/* Fix the inline-block bug in ie7 */
+#views_slideshow_singleframe_pager_views_slideshow-block_1 .pager-num-1, #views_slideshow_singleframe_pager_views_slideshow-block_1 .pager-num-2, #views_slideshow_singleframe_pager_views_slideshow-block_1 .pager-num-3, #views_slideshow_singleframe_pager_views_slideshow-block_1 .pager-num-4 {
+  display: block;
+  float: left;
+}
+
+#scarce_earth_menu {
+  background-position: 8px 0px !important;
+}
+
+/* Slideshow container for the front page sits too high */
+.description_container {
+  bottom: 0;
+}
+
+.description_container a {
+  float: none; 
+}
+
+.yahoo-weather-current .weather-current {
+  margin-left: 10px !important;
+  margin-top: -5px !important;
+}
+
+.yahoo-weather-current .short-weather {
+  overflow: visible;
+}
+
+.yahoo-weather-current img {
+  float: left;
+}
+
+.yahoo-weather-current .yahoo-weather-day-bg {
+  position: absolute;
+}
+
+.short-weather span.replacedImg {
+  margin-top: 2px;
+  float: left;
+}
+
+.long-weather-container .forecast span {
+  float: left;
+}
+
+.short-weather-container .title {
+  filter: none !important;
+}
+
+.yahoo-weather-forecast {
+  height: 77px !important;
+  width: 325px !important;
+}
+
+.forecast span {
+  margin-top: 5px;
+}
+
+.yahoo-weather-forecast span {
+  margin-top: 5px;
+}
+
+.yahoo-weather-forecast .forecast-item-1 {
+  width: 140px !important;
+  margin-left: 13px !important;
+}
+
+.yahoo-weather-forecast .forecast-item-2 span {
+  margin-left: 12px;
+}
+
+.yahoo-weather-forecast .forecast-item-2 .weather-info span {
+  margin-left: 0;
+}
+
+.weather-info .title {
+  height: 15px;
+  line-height: 13px;
+  overflow: visible;
+  margin-bottom: 3px;
+}
+
+.weather-info span {
+  margin-top: 0;
+}
+
+/* Fix the business searches */
+#pre_business_search .view-business-types .intro .view-filters .views-exposed-widgets{
+
+}
+
+#pre_business_search .view-business-types .intro .view-filters .views-exposed-widgets #adv_search {
+  z-index: -1;
+}
+
+/* Timeline fix */
+#timeline {
+  z-index: -1;
+}
+
+/* reset password form fix */
+#password_reset #user-pass #edit-submit {
+  position: absolute;
+  font-size: 0;
+  line-height: 0;
+  top: 75px;
+}
+
+/* contact us submit button fix */
+#edit-submit {
+	display:block !important;	
+	border-color: transparent;
+	font-size:0;
+	line-height:0;
+}
+
+#projects_fly_out span {
+	cursor:pointer;
+}
