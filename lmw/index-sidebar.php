@@ -36,7 +36,7 @@ $cnt++;
 
 print '<tr>
 	<td class="CMSTreeMenuItem" id="plc_lt_zoneContent_PagePlaceholder_PagePlaceholder_lt_zoneLeftMenu_LeftTreeMenu_tid_'.$cnt.'_0">
-		<a href="/chill.php" class="CMSTreeMenuLink" id="plc_lt_zoneContent_PagePlaceholder_PagePlaceholder_lt_zoneLeftMenu_LeftTreeMenu_tid_'.$cnt.'_0_item">
+		<a href="/?view=chill" class="CMSTreeMenuLink" id="plc_lt_zoneContent_PagePlaceholder_PagePlaceholder_lt_zoneLeftMenu_LeftTreeMenu_tid_'.$cnt.'_0_item">
 			Chill Calculator
 		</a>
 	</td>
