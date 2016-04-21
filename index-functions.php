@@ -1670,24 +1670,31 @@ function make_station_summary($aws_id) {
         ROUND(AVG(dp),1) AS dp_avg,
         ROUND(AVG(rh),1) AS rh_avg,
         ROUND(AVG(deltaT),1) AS deltaT_avg,
-        ROUND(SUM(rain),1) AS rain
+        ROUND(SUM(rain),1) AS rain,
+	message
     FROM
     (SELECT * FROM tbl_data_minutes WHERE aws_id = '".$aws_id."' ORDER BY stamp DESC LIMIT 4) AS latest_hour
     INNER JOIN tbl_stations
     ON latest_hour.aws_id = tbl_stations.aws_id
     GROUP BY latest_hour.aws_id;";
 
-    $html = '<table class="table_data" style="width: 600px;">';
-	if ($result = $mysqli->query($sql)) {
-		while($obj = $result->fetch_object()) {
-			$name = $obj->name;
+    $html = "";
+    if ($result = $mysqli->query($sql)) {
+	while($obj = $result->fetch_object()) {
+            $name = $obj->name;
+
+            if (isset($obj->message)) {
+               $html .= '<h3 style="color:red;">'.$obj->message.'</h3>';
+            }
+
+            $html .= '<table class="table_data" style="width: 600px;">';
             $html .= '<tr><th colspan="4">Latest hour\'s observation (CST): '.$obj->latest.'</th></tr>';
             $html .= '<tr><td><strong>Air temp (avg, &deg;C)</strong></td><td>'.$obj->airT_avg.'</td><td><strong>Apparent temp (avg, &deg;C)</strong></td><td>'.$obj->appT_avg.'</td></tr>';
             $html .= '<tr><td><strong>Dew Point (&deg;C)</strong></td><td>'.$obj->dp_avg.'</td><td><strong>Relative Humidity (%)</strong></td><td>'.$obj->rh_avg.'</td></tr>';
             $html .= '<tr><td><strong>Delta T</strong></td><td>'.$obj->deltaT_avg.'</td><td><strong>Rain (mm)</strong></td><td>'.$obj->rain.'</td></tr>';
+            $html .= '</table>';
         }
     }
-    $html .= '</table>';
 
     // summary of today's readings
     $sql = "SELECT
