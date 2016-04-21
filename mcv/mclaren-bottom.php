@@ -1,11 +1,8 @@
-</div> <!-- /.node -->
-      
-            
+		</div> <!-- /.node -->  
     </div>
   </div>
 
-  
-  <div class='hover' id='navigation'>
+  <div class="hover" id="navigation">
 	<a class="aws-menu-link-return" href="http://www.mclarenvale.info"><img class="aws-menu-link-image" src="images/aws-menu/link-return-to-the-main-site.png" alt="" /></a>
 	<div style="display:block; height:80px;">&nbsp;</div>
 	<a class="aws-menu-link" href="?aws_id=MVGWT07"><img class="aws-menu-link-image" src="images/aws-menu/link-aldinga.png" alt="" /></a>
@@ -25,7 +22,6 @@
 	<div style="display:block; height:47px;">&nbsp;</div>
 	<div id="aws-menu-tear">&nbsp;</div>
   </div>
-  
 
 <!-- Planner -->
   
@@ -39,39 +35,35 @@
             width: 100%;
             height: 50px;
             background-color: black;
-            clear: both;
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            padding: 30px 20% 30px 20%;
-        }
-        .footer-social {
-            float: left;
-        }
-        .copyright {
+            padding: 30px 0 30px 60px;
+			clear: both;
+			
             font-family: Arial;
-            font-size: 15px!important;
+            font-size: 13px!important;
             color: white;
             font-weight: bold;
-            float: center;
+
+			vertical-align: middle;
         }
-        .atomix {
-            float: right;
-            color: white!important;
-        }
+		.social {
+			margin-right: 15px;
+		}
+		.social img {
+			height: 35px;
+		}
+		#atomix {
+			text-decoration:none; 
+			font-size:11px; 
+			text-decoration:none; 
+			color:white;
+			margin-left:20%;
+		}
     </style>
 
 	<div class="very-bottom">
-		<div class="container">
-			<div class="footer-social">
-	            <a href="https://twitter.com/mclaren_vale" target="_blank"><i class="fa fa-twitter"></i></a>
-                <a href="http://www.facebook.com/mclarenvalewine" target="_blank"><i class="fa fa-facebook"></i></a>
-                <a href="http://www.youtube.com/user/visitmclarenvale" target="_blank"><i class="fa fa-youtube"></i></a>
-            </div>
-			<div class="copyright"><p>Copyright McLaren Vale &copy; 2015. All Rights Reserved.</p></div>
-			<div class="atomix"><a href="http://atomix.com.au/" title="Web Design Adelaide" style="text-decoration:none; font-size:11px; text-decoration:none; color:white;" target="_blank">website designed &amp; developed by atomix <img src="http://mclarenvale.info/media/atomix_web_design_adelaide_blue.png" width="17" height="17" alt="Web Design Adelaide" style="border:0; vertical-align:middle;" /></a></div>
-		</div>
+		<a href="https://twitter.com/mclaren_vale" target="_blank" class="social"><img src="images/twitter.png" title="Twitter" /></a>
+		<a href="http://www.facebook.com/mclarenvalewine" target="_blank" class="social"><img src="images/facebook.png" title="Facebook" /></a>
+		<a href="http://www.youtube.com/user/visitmclarenvale" target="_blank" class="social"><img src="images/youtube.png" title="YouTube" /></a>
+		Copyright McLaren Vale &copy; 2015. All Rights Reserved.
+		<a href="http://atomix.com.au/" title="Web Design Adelaide" id="atomix" target="_blank">website designed &amp; developed by atomix <img src="images/atomix_web_design_adelaide_blue.png" width="17" height="17" alt="Web Design Adelaide" style="border:0; vertical-align:middle;" /></a>
 	</div>
-
-</body>
-</html>

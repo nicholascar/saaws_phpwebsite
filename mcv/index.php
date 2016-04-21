@@ -52,6 +52,7 @@ $ga_code = google_analytics_samdb();
 	<?php include 'mclaren-header.php'; ?>
 	<?php if (isset($head_additions)) {echo $head_additions;} ?>
 </head>
+<body> 
 	<?php include 'mclaren-top.php'; ?>
 	<?php include 'aws-style.php'; ?>
 	<div class="content_container_aws">
@@ -61,4 +62,6 @@ $ga_code = google_analytics_samdb();
 			<?php include 'aws-bottom.php'; ?>
 		</div>
 	</div>
-<?php include 'mclaren-bottom.php'; ?>
+	<?php include 'mclaren-bottom.php'; ?>
+</body>
+</html>
