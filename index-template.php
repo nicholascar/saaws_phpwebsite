@@ -34,8 +34,8 @@
 <!--[if IE 7]>
   <link rel="stylesheet" type="text/css" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/ie7.css" media="screen">
 <![endif]-->
-<script type="text/javascript" src="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/modernizr.custom.70869.js"></script>
+<script type="text/javascript" src="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/jquery-191min.js"></script>
+<script type="text/javascript" src="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/modernizrcustommin.js"></script>
 <link rel="apple-touch-icon" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/4e33595f-bcfa-420c-8879-1be2c5ca54de/samdb-touch-icon-iphone.png" />
 <link rel="apple-touch-icon" sizes="72x72" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/4e33595f-bcfa-420c-8879-1be2c5ca54de/samdb-touch-icon-ipad.png" />
 <link rel="apple-touch-icon" sizes="114x114" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/4e33595f-bcfa-420c-8879-1be2c5ca54de/samdb-touch-icon-iphone-retina.png" />
