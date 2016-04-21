@@ -24,14 +24,14 @@
 <link href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/7f616216-1b94-4e32-b524-92eeb55ebaeb/favicon.ico" type="image/x-icon" rel="icon" />
 <link type="text/css" rel="stylesheet" href="https://fast.fonts.net/cssapi/e0cc203f-7221-4daf-a2d5-815483dba107.css" media="screen" />
 <link type="text/css" rel="stylesheet" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/7f616216-1b94-4e32-b524-92eeb55ebaeb/print.css" media="print" />
-<link type="text/css" rel="stylesheet" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/7f616216-1b94-4e32-b524-92eeb55ebaeb/main.r14.css" media="screen" />
+<link type="text/css" rel="stylesheet" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/7f616216-1b94-4e32-b524-92eeb55ebaeb/main-17810b3e78.css" media="screen" />
 <!-- Temporary responsive embed fix -->
 <style type="text/css">
   .fixed-aspect-ratio{height:0;padding:0;position:relative;width:100%}.fixed-aspect-ratio--2x1{padding-bottom:50%}.fixed-aspect-ratio--16x9{padding-bottom:56.25%}.fixed-aspect-ratio--4x3{padding-bottom:75%}.fixed-aspect-ratio__content{height:100%;margin:0;padding:0;position:absolute;width:100%}
 </style>
 <!-- End temporary responsive embed fix -->
-<link rel="stylesheet" type="text/css" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/jquery.fancybox.css" media="screen" />
-<link rel="stylesheet" type="text/css" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/jquery.fancybox-thumbs.css" />
+<link rel="stylesheet" type="text/css" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/jqueryfancybox.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/jqueryfancybox-thumbs.css" />
 <!--[if IE 7]>
   <link rel="stylesheet" type="text/css" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/ie7.css" media="screen">
 <![endif]-->
@@ -40,8 +40,8 @@
     var deferredScripts = []; // Push paths of any non-essential scripts to this array to be executed at $(document).ready()
     var responsiveOverride = true;  // Prevent responsive versions of this page
 </script>
-<script type="text/javascript" src="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/prepare.r12.js"></script>
+<script type="text/javascript" src="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/jquery-191min.js"></script>
+<!--<script type="text/javascript" src="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/f88a7f3c-df7e-430a-825c-24cfa8dec9a8/prepare.r12.js"></script>-->
 <link rel="apple-touch-icon" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/7f616216-1b94-4e32-b524-92eeb55ebaeb/se-touch-icon-iphone.png" />
 <link rel="apple-touch-icon" sizes="72x72" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/7f616216-1b94-4e32-b524-92eeb55ebaeb/se-touch-icon-ipad.png" />
 <link rel="apple-touch-icon" sizes="114x114" href="http://www.naturalresources.sa.gov.au/files/templates/00000000-0000-0000-0000-000000000000/7f616216-1b94-4e32-b524-92eeb55ebaeb/se-touch-icon-iphone-retina.png" />

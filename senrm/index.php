@@ -63,7 +63,7 @@ $page_contents = '
 ';
 
 //get the template, fill it with content, print
-$template_url = "http://www.naturalresources.sa.gov.au/samurraydarlingbasin/home";
+$template_url = "http://www.naturalresources.sa.gov.au/senrm/home";
 $template_cache_file = "index-template.php";
 print generate_page_with_template($template_url, $template_cache_file, $page_contents);
 
